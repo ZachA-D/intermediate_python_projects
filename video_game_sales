@@ -1,1 +1,79 @@
+My friends and I have decided to start own very own game company! We have recently developed a new Shooter game that we plan on releasing on PC. We need to do some field research to find out where our launch would do best and to see what genres do better in which location for any future titles we might develop.
 
+1. What region are the most popular 'Shooter' genre games being sold on the PC?
+2. In the future, we might want to pivot to expanding to a different platform, what platform has the most 'Shooter' titles on it?
+3. Eventually, we would want our next project to remain in the united states to keep logistics simpler, what genre of game would have the highest chance of being sold here in the US?
+Let's use this section to load in all of our libraries as well as our datasets.
+import pandas as pd 
+
+df = pd.read_csv('vgsales.csv') 
+df.head()
+
+Let's check to see if the dataset is able to show both 'Genre' and 'Platform' so we can start.
+
+print(df['Genre'].unique())
+print(df['Platform'].unique())
+
+Success! this dataset contains both the genre and platform that we are looking for. Now let'g get started with gathering our information.
+let's start off by finding out the region that has the most 'Shooter' titles for the PC platform.
+
+
+# First, we filter the data to give us the data for PC shooter games
+pc_shooter_games = df[(df['Platform'] == 'PC') & (df['Genre'] == 'Shooter')]
+
+# Second, we find the total sales for each region
+sales_by_region = {
+    'NA_Sales': pc_shooter_games['NA_Sales'].sum(),
+    'EU_Sales': pc_shooter_games['EU_Sales'].sum(),
+    'JP_Sales': pc_shooter_games['JP_Sales'].sum()
+}
+
+# Last, we find the region with the highest sales
+most_sales_region = max(sales_by_region, key=sales_by_region.get)
+
+print("Sales by region for Shooter titles on PC:")
+print(sales_by_region)
+print(f"The region with the most sales for Shooter titles on PC is: {most_sales_region}")
+
+Success! we have discovered that the best place to sell our PC shooter game would be to bring it to the EU market. However, recently the owner of the company has decided to broaden our horizons and find a new market in the console space. If we were to open up to the console space, what console would be the most optimal choice for maximising sales to one console?
+# First, we need to find out how many types of consoles are being produced and distributed after 2015 
+consoles_after_2015 = df[df['Year'] > 2015]['Platform'].unique()
+
+print(len(consoles_after_2015))
+print( consoles_after_2015)
+
+
+
+Now that we know all of the consoles that are available, let's start checking to see which console has the most sales.
+
+# We have to first filter the data to only show the sales from the 'Shooter' genre
+shooter_sales = df[df['Genre'] == 'Shooter']
+
+# Next, we will group  by Platform and sum the Global_Sales for each console
+shooter_sales_per_console = shooter_sales.groupby('Platform')['Global_Sales'].sum()
+
+# Lastly we will find the console with the highest 'Shooter' sales
+console_with_most_shooter_sales = shooter_sales_per_console.idxmax()
+most_shooter_sales_value = shooter_sales_per_console.max()
+
+print(f"The console with the most Shooter genre sales is: {console_with_most_shooter_sales}, with {most_shooter_sales_value} million units sold!")
+
+
+Amazing! So far, we have determined that our new 'Shooter' game should roll out in the EU market first before making it over to the US market. We have also determined that once we make a pivot to consoles, we should bring it over to the Xbox 360. however, due to next generation consoles being more popular options today, I would recommend that we shift our focus to the Xbox One.
+Thankfully, over the past few years we have been able to make several data-driven decisions that has made our new game a huge success! Now, as a studio we want to pivot into a newer genre. We need to determine what genre's sold the most (within the last 2 years) and determine which one would be a solid financial pivot into.
+
+# First we need to filter the data for all games released in and after 2018
+sales_from_2018 = df[df['Year'] >= 2018]
+
+# Next, we group by genre and sum the Global_Sales for each genre
+genre_sales = sales_from_2018.groupby('Genre')['Global_Sales'].sum()
+
+# lastly, we need to find the genre with the highest total sales
+most_popular_genre = genre_sales.idxmax()
+most_popular_genre_sales = genre_sales.max()
+
+print(f"The most popular genre from 2018 onward is: {most_popular_genre}, with {most_popular_genre_sales} million units sold.")
+
+Awesome! Looks like Simulation games are the hottest thing to get into right now. 
+
+This concludes my Python project. Thank you!
